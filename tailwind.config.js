@@ -8,8 +8,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        'soft-blue': '#4A90E2',      // Primary color
+        'light-gray': '#F5F5F5',     // Background color
+        'white': '#FFFFFF',           // Sidebar background
+        'dark-gray': '#333333',       // Text color
+        'light-blue': '#D9EFFF',      // Secondary color like for hovers
+        'soft-red': '#E94B35',        // Error/Alert color
       },
     },
   },
