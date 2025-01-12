@@ -4,10 +4,14 @@ import Image from 'next/image';
 import axios from 'axios';
 
 const fetchOrders = async () => {
-  const orders = await axios.get('http://localhost:3001/orders', {
-    next: { revalidate: 0 },
-  });
-  return orders.data;
+  try {
+    const orders = await axios.get('http://localhost:3001/orders', {
+      next: { revalidate: 0 },
+    });
+    return orders.data;
+  } catch (err) {
+    console.log("Ops Could not fetch data", err.message)
+  }
 };
 
 const OrdersPage = async () => {
