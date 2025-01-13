@@ -44,7 +44,7 @@ const SideBar = () => {
                         ><MdOutlineReceiptLong size={27} className="inline-block mr-1 mb-1" /> Order</Link>
                     </li>
                     <li className="mb-2">
-                        <Link href='/Menu'
+                        <Link href='/menus'
                         className="block text-dark-gray text-lg font-semibold p-2 hover:bg-light-blue hover:rounded-md"
                         ><MdRestaurant size={27} className="inline-block mr-1 mb-1" /> Menu</Link>
                     </li>
