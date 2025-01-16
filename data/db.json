@@ -106,6 +106,57 @@
       "order_status": "Pending"
     }
   ],
+  "menuItems": [
+    {
+      "id": "1",
+      "name": "Fries",
+      "price": "45",
+      "category": "Sides",
+      "image": "/images/dishes/fries.jpeg"
+    },
+    {
+      "id": "2",
+      "name": "Burger",
+      "price": "75",
+      "category": "Main",
+      "image": "/images/dishes/burger.jpeg"
+    },
+    {
+      "id": "3",
+      "name": "Coke",
+      "price": "23",
+      "category": "Drinks",
+      "image": "/images/dishes/coke.jpeg"
+    },
+    {
+      "id": "4",
+      "name": "Salad",
+      "price": "40",
+      "category": "Sides",
+      "image": "/images/dishes/salads.jpeg"
+    },
+    {
+      "id": "7c28",
+      "name": "cheeseburger",
+      "category": "Main",
+      "price": "99.99",
+      "image": "https://res.cloudinary.com/drnsgdvfy/image/upload/v1737047317/uzc7aahwlthlja9hqpw2.jpg"
+    },
+    {
+      "id": "5d26",
+      "name": "coke",
+      "category": "Drinks",
+      "price": "35.88",
+      "image": "https://res.cloudinary.com/drnsgdvfy/image/upload/v1737047633/uka5fz0ycbuxhdpqucg8.jpg"
+    },
+    {
+      "id": "fd6c",
+      "name": "kota",
+      "category": "Main",
+      "price": "67",
+      "image": "https://res.cloudinary.com/drnsgdvfy/image/upload/v1737049448/gioif3kbcjqdm4fmybxs.jpg"
+    }
+  ],
   "announcements": [
     {
       "announcement_id": "1",
