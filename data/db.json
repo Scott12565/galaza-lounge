@@ -59,7 +59,7 @@
       "id": "1001",
       "customer_name": "Dr Scott",
       "total_amount": "45",
-      "order_status": "Pending",
+      "order_status": "Completed",
       "order_details": [
         {
           "dish": "Ice Cream",
@@ -97,7 +97,7 @@
       "id": "1003",
       "customer_name": "Jane Smith",
       "total_amount": "57",
-      "order_status": "Pending"
+      "order_status": "Completed"
     },
     {
       "id": "1004",
@@ -143,18 +143,11 @@
       "image": "https://res.cloudinary.com/drnsgdvfy/image/upload/v1737047317/uzc7aahwlthlja9hqpw2.jpg"
     },
     {
-      "id": "5d26",
-      "name": "coke",
-      "category": "Drinks",
-      "price": "35.88",
-      "image": "https://res.cloudinary.com/drnsgdvfy/image/upload/v1737047633/uka5fz0ycbuxhdpqucg8.jpg"
-    },
-    {
-      "id": "fd6c",
-      "name": "kota",
+      "id": "e83c",
+      "name": "Kota",
       "category": "Main",
-      "price": "67",
-      "image": "https://res.cloudinary.com/drnsgdvfy/image/upload/v1737049448/gioif3kbcjqdm4fmybxs.jpg"
+      "price": "88.90",
+      "image": "https://res.cloudinary.com/drnsgdvfy/image/upload/v1737149914/s8z9cdppnk2yaaye2s2b.jpg"
     }
   ],
   "announcements": [

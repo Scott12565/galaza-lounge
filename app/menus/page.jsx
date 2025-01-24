@@ -91,7 +91,7 @@ const Menu = () => {
     <div key={item.id} className="bg-white p-4 rounded-md shadow-md">
       <Image
         width={300}
-        height={250}
+        height={500}
         src={item.image || "/default-image.jpg"}
         alt={item.name}
         className="w-full h-48 object-cover rounded-md"

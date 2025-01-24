@@ -1,10 +1,14 @@
 import axios from "axios";
+import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation"; // Import the `notFound` helper from Next.js
 
 const fetchOrder = async (orderId) => {
     try {
-        const response = await axios.get(`http://localhost:3001/orders?id=${orderId}`);
+        const response = await axios.get(`http://localhost:3001/orders?id=${orderId}`, {
+            next: { revalidatePath: 0 }
+        });
         const data = response.data;
 
         if (data.length > 0) {
@@ -20,6 +24,10 @@ const OrderDetailsPage = async ({ params }) => {
     const { id } = params; // This id is order_id
     const order = await fetchOrder(id);
 
+    if (!order) {
+        notFound(); // Triggers Next.js 404 page if no order is found
+    }
+
     return (
       <section className="p-6">
         {/* order header */}
@@ -28,7 +36,7 @@ const OrderDetailsPage = async ({ params }) => {
             <p className="text lg text-dark-gray">Customer {order.customer_name}</p>
         </div>
         {/* order info */}
-        <div className="mb-6 p-6 shadow-md rounder-md">
+        <div className="mb-6 p-6 shadow-md rounded-md">
             <h3 className="text-lg text-dark-gray font-bold mb-1">Order Info</h3>
             <div>
                 <h4 className="text-ms text-dark-gray">
@@ -53,7 +61,7 @@ const OrderDetailsPage = async ({ params }) => {
                     }} />
 
                     <div className="card-body">
-                        <h4 className="text-dark-gray font-semibold text-lg py-1">Ice Cream</h4>
+                        <h4 className="text-dark-gray font-semibold text-lg py-1">{order.dish}</h4>
                         <p className="text-md text-dark-gray">Price: {order.price}</p>
                         <p className="text-md text-dark-gray">Quantity: {order.quantity}</p>
                     </div>
@@ -62,11 +70,10 @@ const OrderDetailsPage = async ({ params }) => {
                 }
             </div>
             <div className="btn mb-6 py-4">
-                
-                <Link href={`/orders/edit-order/${order.order_id}`}
+                <Link href={`/orders/edit-order/${order.id}`}
                 className="bg-soft-blue text-dark-gray text-white px-4 py-2 rounded-md hover:bg-light-blue hover:text-black transition duration-300 ease-in-out">
                     View
-            </Link>
+                </Link>
                 <button className="bg-red-500 text-white ml-4 px-4 py-2 rounded-md hover:bg-red-600">
                         Cancel Order
                 </button>
@@ -78,4 +85,3 @@ const OrderDetailsPage = async ({ params }) => {
 };
 
 export default OrderDetailsPage;
-

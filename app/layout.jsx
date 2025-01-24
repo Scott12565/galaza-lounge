@@ -2,6 +2,7 @@ import "./globals.css";
 import SideBar from "@/components/SideBar";
 import NavBar from "@/components/NavBar";
 import SideBarProvider from "@/context/SideBarContext";
+import SearchContextProvider from "@/context/SearchContext";
 
 export const metadata = {
   title: "Galaza Lounge",
@@ -14,11 +15,14 @@ export default function RootLayout({ children }) {
       <body
         className={` antialiased flex h-[100vh]`} >
           <SideBarProvider>
-            <SideBar />
-            <main className="flex-grow p-1 md:p-3">
-              <NavBar />
-              {children}
-            </main>
+            <SearchContextProvider>
+              <SideBar />
+              <main className="flex-grow p-1 md:p-3">
+                <NavBar />
+                {children}
+              </main>
+            </SearchContextProvider>
+            
           </SideBarProvider>
         
       </body>
