@@ -3,12 +3,15 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import io from "socket.io-client";
 
 const EditOrder = ({ params }) => {
     const route = useRouter()
     const [order, setOrder] = useState(null);
     const [orderStatus, setOrderStatus] = useState(null);
     const { id } = params; // Get the selected order's ID from params (via dynamic route)
+    
+    const socket = io('http://localhost:3002'); // Connect to the Socket.IO server
 
     useEffect(() => {
       const fetchOrder = async () => {
@@ -31,65 +34,76 @@ const EditOrder = ({ params }) => {
     if (!order) return <div>Loading...</div>; // Handle loading state
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-            try {
-                await axios.put(`http://localhost:3001/orders/${order.id}`, {
-                    ...order,
-                    order_status: orderStatus
-                })
-                route.push('/orders') // redirect user to order detail page
-                alert("Order updated successfully!");
-            } catch (err) {
-                console.log("error updating order!", err.message)
-            }
-    }
-        
+        e.preventDefault();
+        try {
+            // Update the order status in the backend
+            const updatedOrder = {
+                ...order,
+                order_status: orderStatus,
+            };
+            
+            await axios.put(`http://localhost:3001/orders/${order.id}`, updatedOrder);
+    
+            // Emit updated order via Socket.IO
+            socket.emit("order-status", updatedOrder);
+    
+            route.push(`/`); // Redirect to order details page
+            alert("Order updated successfully!");
+        } catch (err) {
+            console.error("Error updating order!", err.message);
+        }
+    };
     
     return ( 
         <section className="p-6">
             <h1 className="text-3xl font-bold px-4">Edit Order {order?.id}</h1>
-            <form className="p-4"
-            onSubmit={handleSubmit}>
+            <form className="p-4" onSubmit={handleSubmit}>
                 {/* customer name */}
                 <div className="mb-4">
                     <label htmlFor="customer_Name" className="mb-4 text-dark-gray text-lg">Customer Name: </label>
                     <input 
-                    type="text"
-                    value={order?.customer_name}
-                    className="text-lg p-2 w-full bg-light-gray border rounded-md"
-                    disabled />
+                        type="text"
+                        value={order?.customer_name}
+                        className="text-lg p-2 w-full bg-light-gray border rounded-md"
+                        disabled />
                 </div>
 
                 {/* total amount */}
                 <div className="mb-4">
-                    <label htmlFor="Total Amount" className="mb-4 text-dark-gray text-lg">Customer Name: </label>
+                    <label htmlFor="Total Amount" className="mb-4 text-dark-gray text-lg">Total Amount: </label>
                     <input 
-                    type="text"
-                    value={`R${order?.total_amount}`}
-                    className="text-lg p-2 w-full bg-light-gray border rounded-md"
-                    disabled />
+                        type="text"
+                        value={`R${order?.total_amount}`}
+                        className="text-lg p-2 w-full bg-light-gray border rounded-md"
+                        disabled />
                 </div>
 
                 {/* update status */}
                 <div className="mb-4">
                     <label htmlFor="Order Status" className="mb-4">Order Status: </label>
-                    <select value={orderStatus} onChange={(e) => setOrderStatus(e.target.value)} 
-                    className="rounded-md border w-full bg-light-gray p-2">
-                        <option name="Complete">Completed</option>
-                        <option name="Complete">Pending</option>
-                        <option name="Complete">Cancelled</option>
+                    <select 
+                        value={orderStatus} 
+                        onChange={(e) => setOrderStatus(e.target.value)} 
+                        className="rounded-md border w-full bg-light-gray p-2"
+                    >
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
                     </select>
                 </div>
 
                 <button
-                className="px-[12px] py-2 mb-4 bg-soft-blue 
-                text-light-gray text-[16px] rounded-md cursor-pointer transition duration-300
-                hover:bg-light-gray hover:text-dark-gray">
+                    className="px-[12px] py-2 mb-4 bg-soft-blue 
+                    text-light-gray text-[16px] rounded-md cursor-pointer transition duration-300
+                    hover:bg-light-gray hover:text-dark-gray">
                     Save Changes
                 </button>
             </form>
         </section>
-     );
+    );
 }
- 
+
 export default EditOrder;

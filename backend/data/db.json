@@ -59,7 +59,7 @@
       "id": "1001",
       "customer_name": "Dr Scott",
       "total_amount": "45",
-      "order_status": "Completed",
+      "order_status": "completed",
       "order_details": [
         {
           "dish": "Ice Cream",
@@ -79,7 +79,7 @@
       "id": "1002",
       "customer_name": "John Doe",
       "total_amount": "27",
-      "order_status": "Cancelled",
+      "order_status": "completed",
       "order_details": [
         {
           "dish": "Porridge",
@@ -97,13 +97,13 @@
       "id": "1003",
       "customer_name": "Jane Smith",
       "total_amount": "57",
-      "order_status": "Completed"
+      "order_status": "pending"
     },
     {
       "id": "1004",
       "customer_name": "Grek Doe",
       "total_amount": "89",
-      "order_status": "Pending"
+      "order_status": "completed"
     }
   ],
   "menuItems": [
@@ -148,6 +148,13 @@
       "category": "Main",
       "price": "88.90",
       "image": "https://res.cloudinary.com/drnsgdvfy/image/upload/v1737149914/s8z9cdppnk2yaaye2s2b.jpg"
+    },
+    {
+      "id": "20b4",
+      "name": "jhbasjdbhjhas",
+      "category": "Sides",
+      "price": "3453",
+      "image": "https://res.cloudinary.com/drnsgdvfy/image/upload/v1737750816/v8bgkfnqrcwbodmnb6dg.jpg"
     }
   ],
   "announcements": [

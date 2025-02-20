@@ -11,6 +11,10 @@ const DashBoard = () => {
     filteredOrders, handleQuery, searchQuery } = useContext(searchContext);
     const router = useRouter();
 
+    console.log("Recent Orders: ", recentOrders);
+console.log("Dashboard Stats: ", dashboardStats);
+console.log("Search Query: ", searchQuery);
+
     useEffect(() => {
       if (!dashboardStats || !recentOrders) {
         router.push("/404"); // Redirect to 404 page if data is missing

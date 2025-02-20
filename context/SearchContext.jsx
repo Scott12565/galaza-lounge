@@ -2,6 +2,7 @@
 
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
+import { io } from "socket.io-client";
 
 export const searchContext = createContext();
 
@@ -41,7 +42,23 @@ export default function SearchContextProvider({ children }) {
       setFilteredOrders(orders); // Initially, show all orders
     };
     fetchData();
-  }, []);
+  }, []);  // Run only on mount
+  
+  // Listen to order updates via socket
+  const socket = io('http://localhost:3002');
+  socket.on('order-status', async (updatedOrder) => {
+    // Update the order in the state without causing infinite re-renders
+    setRecentOrders((prevOrders) => {
+      return prevOrders.map((order) =>
+        order.id === updatedOrder.id ? updatedOrder : order
+      );
+    });
+  
+    // Refetch recent orders if needed
+    const updatedOrders = await fetchRecentOrders(); // Fetch fresh orders if necessary
+    setFilteredOrders(updatedOrders); // Update filtered orders as well
+  });
+  
 
   // Handle search and filter
   const handleQuery = (e) => {
