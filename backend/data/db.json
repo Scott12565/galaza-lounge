@@ -59,7 +59,7 @@
       "id": "1001",
       "customer_name": "Dr Scott",
       "total_amount": "45",
-      "order_status": "completed",
+      "order_status": "delivered",
       "order_details": [
         {
           "dish": "Ice Cream",
