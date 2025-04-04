@@ -1,12 +1,23 @@
 const mongoose = require("mongoose");
 
-const orderSchema = new mongoose.Schema({
-  customer_name: String,
-  total_amount: Number,
+// Define the Order schema
+const OrderSchema = new mongoose.Schema({
+  order_number: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  customer_name: {
+    type: String,
+    required: true,
+  },
+  total_amount: {
+    type: Number,
+    required: true,
+  },
   order_status: {
     type: String,
-    enum: ["pending", "completed", "cancelled"],
-    default: "pending",
+    required: true,
   },
   order_details: [
     {
@@ -18,4 +29,5 @@ const orderSchema = new mongoose.Schema({
   ],
 }, { timestamps: true });
 
-module.exports = mongoose.model("Order", orderSchema);
+// Check if the model already exists
+module.exports = mongoose.models.Order || mongoose.model("Order", OrderSchema);

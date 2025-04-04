@@ -3,20 +3,10 @@
 import { useContext, useEffect } from "react";
 import Link from "next/link";
 import { searchContext } from "@/context/SearchContext";
-import { useRouter } from "next/navigation";
 
 const OrdersPage = () => {
   const { filteredOrders } = useContext(searchContext);
-  const router = useRouter();
-  useEffect(() => {
-    if (filteredOrders.length === 0) {
-      router.push("/404"); // Redirect to 404 page if no orders found
-    }
-  }, [filteredOrders]);
 
-  if (filteredOrders.length === 0) {
-    return null; // Prevent rendering while redirecting
-  }
   return (
     <section className="my-2 p-1 lg:p-6">
       <div className="mb-4 flex items-center justify-between">
@@ -24,7 +14,6 @@ const OrdersPage = () => {
           <h1 className="text-dark-gray font-bold text-3xl">Orders</h1>
           <p className="text-lg text-dark-gray">Manage your restaurant orders</p>
         </div>
-        
       </div>
 
       {/* Orders list */}
@@ -37,7 +26,7 @@ const OrdersPage = () => {
             <thead>
               <tr>
                 <th className="text-left px-4 py-2 font-semibold text-dark-gray text-md">
-                  Order ID
+                  Order Number
                 </th>
                 <th className="text-left px-4 py-2 font-semibold text-dark-gray text-md">
                   Customer
@@ -56,8 +45,8 @@ const OrdersPage = () => {
             <tbody>
               {filteredOrders.length > 0 ? (
                 filteredOrders.map((order) => (
-                  <tr key={order.id} className="py-6">
-                    <td className="px-4 py-2">{order.id}</td>
+                  <tr key={order._id} className="py-6">
+                    <td className="px-4 py-2">{order.order_number}</td>
                     <td className="px-4 py-2">{order.customer_name}</td>
                     <td className="px-4 py-2">R{order.total_amount}</td>
                     <td
@@ -71,7 +60,7 @@ const OrdersPage = () => {
                     </td>
                     <td className="px-4 py-2">
                       <Link
-                        href={`/orders/${order.id}`}
+                        href={`/orders/${order._id}`}
                         className="bg-soft-blue px-4 py-1 text-light-gray hover:bg-light-blue hover:text-dark-gray cursor-pointer transition-all duration-500 rounded-md"
                       >
                         View

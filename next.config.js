@@ -1,9 +1,6 @@
 // next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    experimental: {
-        appDir: true,  // Enable the new app directory
-    },
     images: {
         remotePatterns: [
             {

@@ -12,8 +12,8 @@ const DashBoard = () => {
     const router = useRouter();
 
     console.log("Recent Orders: ", recentOrders);
-console.log("Dashboard Stats: ", dashboardStats);
-console.log("Search Query: ", searchQuery);
+    console.log("Dashboard Stats: ", dashboardStats);
+    console.log("Search Query: ", searchQuery);
 
     useEffect(() => {
       if (!dashboardStats || !recentOrders) {
@@ -34,38 +34,46 @@ console.log("Search Query: ", searchQuery);
       </div>
 
       {/* Stats */}
-      {dashboardStats && (
+      {dashboardStats.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-          <div className="bg-white shadow-md rounded-md p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-lg">Total Orders</h3>
-              <Image src={receipt} alt="receipt icon" width={30} height={30} />
-            </div>
-            <p className="text-3xl font-semibold mt-2">{dashboardStats.total_orders || 0}</p>
-          </div>
-          <div className="bg-white shadow-md rounded-md p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-lg">Active Menu Items</h3>
-              <Image src={restaurant} alt="restaurant icon" width={30} height={30} />
-            </div>
-            <p className="text-3xl font-semibold mt-2">{dashboardStats.active_menu_items || 0}</p>
-          </div>
-          <div className="bg-white shadow-md rounded-md p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-lg">Total Revenue</h3>
-              <Image src={monetization} alt="monetization icon" width={30} height={30} />
-            </div>
-            <p className="text-3xl font-semibold mt-2">R{dashboardStats.total_revenue || 0}</p>
-          </div>
-          <div className="bg-white shadow-md rounded-md p-6">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-lg">Pending Orders</h3>
-              <Image src={receipt} alt="receipt icon" width={30} height={30} />
-            </div>
-            <p className="text-3xl font-semibold mt-2">{dashboardStats.pending_orders || 0}</p>
-          </div>
+          {dashboardStats.map((stat, index) => (
+            <>
+              <div key={`total_orders-${stat._id}`} className="bg-white shadow-md rounded-md p-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-lg">Total Orders</h3>
+                  <Image src={receipt} alt="receipt icon" width={30} height={30} />
+                </div>
+                <p className="text-3xl font-semibold mt-2">{stat.total_orders || 0}</p>
+              </div>
+
+              <div key={`active_menu_items-${index}`} className="bg-white shadow-md rounded-md p-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-lg">Active Menu Items</h3>
+                  <Image src={restaurant} alt="restaurant icon" width={30} height={30} />
+                </div>
+                <p className="text-3xl font-semibold mt-2">{stat.active_menu_items || 0}</p>
+              </div>
+
+              <div key={`total_revenue-${index}`} className="bg-white shadow-md rounded-md p-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-lg">Total Revenue</h3>
+                  <Image src={monetization} alt="monetization icon" width={30} height={30} />
+                </div>
+                <p className="text-3xl font-semibold mt-2">R{stat.total_revenue || 0}</p>
+              </div>
+
+              <div key={`pending_orders-${index}`} className="bg-white shadow-md rounded-md p-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-lg">Pending Orders</h3>
+                  <Image src={receipt} alt="receipt icon" width={30} height={30} />
+                </div>
+                <p className="text-3xl font-semibold mt-2">{stat.pending_orders || 0}</p>
+              </div>
+            </>
+          ))}
         </div>
       )}
+
 
       {/* Recent Orders */}
       {recentOrders && (
@@ -86,10 +94,10 @@ console.log("Search Query: ", searchQuery);
               </thead>
               <tbody>
                 {filteredOrders.length > 0 ? (
-                  filteredOrders.map((order) => (
-                    <tr className="px-4 py-2" key={order.id}>
+                  filteredOrders.map((order, index) => (
+                    <tr className="px-4 py-2" key={order.order_number}>
                       <td className="px-4 py-2">
-                        <Link href={`/orders/${order.id}`}>{order.id}</Link>
+                        <Link href={`/orders/${order.id}`}>{order.order_number}</Link>
                       </td>
                       <td className="px-4 py-2">
                         <Link href={`/orders/${order.id}`}>{order.customer_name}</Link>

@@ -1,88 +1,86 @@
-import axios from "axios";
-import { revalidatePath } from "next/cache";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation"; // Import the `notFound` helper from Next.js
-
+import axios from 'axios';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const fetchOrder = async (orderId) => {
     try {
-        const response = await axios.get(`http://localhost:3001/orders?id=${orderId}`, {
-            next: { revalidatePath: 0 }
-        });
-        const data = response.data;
-
-        if (data.length > 0) {
-            return data[0]; // Return the first matching order
-        }
+        const response = await axios.get(`http://localhost:3000/api/orders/${orderId}`);
+        return response.data;
     } catch (error) {
         console.error("Error fetching order:", error);
-        return null; // Handle error
+        return null; // Return null if the fetch fails
     }
 };
 
 const OrderDetailsPage = async ({ params }) => {
-    const { id } = params; // This id is order_id
-    const order = await fetchOrder(id);
+    const { id } = params; // No need to await params, it's already available
+    const order = await fetchOrder(id); // Fetch the order details by ID
 
     if (!order) {
-        notFound(); // Triggers Next.js 404 page if no order is found
+        return <p>Order not found</p>; // Handle error gracefully
     }
 
     return (
         <section className="p-6">
-            
-            {/* order header */}
+            {/* Order Header */}
             <div className="mb-6">
-                <h1 className="text-3xl font-bold text-dark-grey">Order {order.id}</h1>
-                <p className="text lg text-dark-gray">Customer {order.customer_name}</p>
+                <h1 className="text-3xl font-bold text-dark-gray">Order {order.order_number}</h1>
+                <p className="text-lg text-dark-gray">Customer: {order.customer_name}</p>
             </div>
 
-            {/* order info */}
-            <div className="mb-6 p-6 shadow-md rounded-md">
+            {/* Order Info */}
+            <div className="mb-6 p-6 shadow-md rounded-md bg-white">
                 <h3 className="text-lg text-dark-gray font-bold mb-1">Order Info</h3>
                 <div>
-                    <h4 className="text-ms text-dark-gray">
-                        <strong>Status: </strong>{order.order_status}</h4>
-                    <h4 className="text-sm text-dark-gray">
-                        <strong>Total Amount: </strong>R{order.total_amount}</h4>
-                    <h4 className="text-sm text-dark-gray">
-                        <strong>Date: </strong>{order.order_date}</h4>
+                    <h4 className="text-md text-dark-gray">
+                        <strong>Status: </strong> {order.order_status}
+                    </h4>
+                    <h4 className="text-md text-dark-gray">
+                        <strong>Total Amount: </strong> R{order.total_amount}
+                    </h4>
+                    <h4 className="text-md text-dark-gray">
+                        <strong>Date: </strong> {new Date(order.createdAt).toLocaleDateString()}
+                    </h4>
                 </div>
             </div>
 
-            {/* order details */}
-            <div className="mb-6 p-6" >
+            {/* Order Items */}
+            <div className="mb-6 p-6 bg-white shadow-md rounded-md">
                 <h3 className="text-lg text-dark-gray font-bold mb-2">Order Items</h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                    {
-                        order.order_details?.map(order => (
-                            <div key={order.dish} className="card shadow-md rounded-md p-3">
-                                <Image src={order.image} alt="order image" width={300} height={150} style={{
-                                    borderRadius: "3px"
-                                }} />
-
-                                <div className="card-body">
-                                    <h4 className="text-dark-gray font-semibold text-lg py-1">{order.dish}</h4>
-                                    <p className="text-md text-dark-gray">Price: {order.price}</p>
-                                    <p className="text-md text-dark-gray">Quantity: {order.quantity}</p>
-                                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {order.order_details?.map((item, index) => (
+                        <div key={index} className="shadow-md rounded-md p-3 bg-gray-100">
+                            <Image
+                                src={item.image}
+                                alt={item.dish}
+                                width={300}
+                                height={150}
+                                className="rounded-md"
+                                layout="intrinsic"
+                            />
+                            <div className="mt-3">
+                                <h4 className="text-dark-gray font-semibold text-lg">{item.dish}</h4>
+                                <p className="text-md text-dark-gray">Price: R{item.price}</p>
+                                <p className="text-md text-dark-gray">Quantity: {item.quantity}</p>
                             </div>
-                        ))
-                    }
+                        </div>
+                    ))}
                 </div>
-                <div className="btn mb-6 py-4">
-                    <Link href={`/orders/edit-order/${order.id}`}
-                        className="bg-soft-blue text-dark-gray text-white px-4 py-2 rounded-md hover:bg-light-blue hover:text-black transition duration-300 ease-in-out">
-                        View
+
+                {/* Action Buttons */}
+                <div className="mt-6 flex gap-4">
+                    <Link
+                        href={`/orders/edit-order/${order._id}`}
+                        className="bg-soft-blue text-white px-4 py-2 rounded-md hover:bg-light-blue transition duration-300"
+                    >
+                        Edit Order
                     </Link>
-                    <button className="bg-red-500 text-white ml-4 px-4 py-2 rounded-md hover:bg-red-600">
-                            Cancel Order
+                    <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300">
+                        Cancel Order
                     </button>
                 </div>
             </div>
-        
         </section>
     );
 };

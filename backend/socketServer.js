@@ -1,63 +1,72 @@
-const { Server } = require("socket.io");
-const http = require("http");
-// require("dotenv").config();
 const connectDB = require("./config/dbConnect");
 const Order = require("./models/orders");
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
 
-// Connect to MongoDB
-connectDB();
+const app = express();
+const server = http.createServer(app);
 
-// Create HTTP server for Socket.IO
-const server = http.createServer();
-
-// Initialize Socket.IO
 const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
+    cors: {
+        origin: "*",
+    },
 });
 
-// Handle client connections
-io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
+app.use(cors());
+app.use(express.json());
 
-  // Listen for order updates
-  socket.on("update-order-status", async ({ orderId, newStatus }) => {
-    try {
-      const updatedOrder = await Order.findByIdAndUpdate(
-        orderId,
-        { order_status: newStatus },
-        { new: true }
-      );
+connectDB();
 
-      if (updatedOrder) {
-        console.log("Broadcasting updated order:", updatedOrder);
-        io.emit("order-status", updatedOrder);
-      }
-    } catch (error) {
-      console.error("Error updating order:", error);
-    }
-  });
+// Store global reference to Socket.io
+global.io = io;
 
-  // Listen for new orders
-  socket.on("new-order", async (orderData) => {
-    try {
-      const newOrder = new Order(orderData);
-      await newOrder.save();
-      console.log("New Order Saved:", newOrder);
-      io.emit("new-order", newOrder);
-    } catch (error) {
-      console.error("Error saving new order:", error);
-    }
-  });
+// **Socket.io Connection**
+io.on('connection', (socket) => {
+    console.log('A user connected');
 
-  socket.on("disconnect", () => {
-    console.log("A user disconnected:", socket.id);
-  });
+    // Listen for order-status updates and update the order in the database
+    socket.on('order-status', async (updatedOrder) => {
+        try {
+            // Find and update the order by its ID
+            const updated = await Order.findByIdAndUpdate(updatedOrder._id, updatedOrder, { new: true });
+
+            // Emit the updated order to all connected clients
+            io.emit('order-updated', updated);
+            console.log('Order status updated:', updated);
+        } catch (error) {
+            console.error('Error updating order status:', error);
+        }
+    });
+
+    // When an order is received via WebSockets (new-order)
+    socket.on('new-order', async (orderData) => {
+        try {
+            // Generate a unique order number
+            const order_number = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+            orderData.order_number = order_number;
+
+            // Create and save a new order
+            const newOrder = new Order(orderData);
+            const savedOrder = await newOrder.save();
+
+            // Notify all clients of the new order
+            io.emit('order-updated', savedOrder);
+            console.log('New order created:', savedOrder);
+        } catch (error) {
+            console.error('Error saving order:', error);
+        }
+    });
+
+    // Handle disconnect event
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
 });
 
 // Start the server
-const PORT = process.env.PORT || 3002;
+const PORT = 3001;
 server.listen(PORT, () => {
-  console.log(`Socket.IO server running on http://localhost:${PORT}`);
+    console.log(`🚀 Server running with Express & Socket.io on port ${PORT}`);
 });
